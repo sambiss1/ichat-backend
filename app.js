@@ -1,8 +1,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const userRouter = require("./routes/user")
 
 const app = express();
 app.use(express.json())
+
+
+app.use((request, response, next) => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    // response.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
 
 mongoose.connect(`mongodb://${process.env.NODE_APP_DB_USER}:${process.env.NODE_APP_DB_PASSWORD}@${process.env.NODE_APP_DB_HOST}/${process.env.NODE_APP_DB_NAME}?replicaSet=rs0`, {
@@ -10,5 +20,13 @@ mongoose.connect(`mongodb://${process.env.NODE_APP_DB_USER}:${process.env.NODE_A
     useUnifiedTopology: true
 }).then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+
+app.use("/api/user", userRouter);
+
+// App final response
+app.use((request, response, next) => {
+    console.log('Réponse envoyée avec succès !');
+});
 
 module.exports = app;

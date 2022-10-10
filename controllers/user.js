@@ -19,3 +19,18 @@ exports.createUser = ((request, response, next) => {
         })
         .catch(error => response.status(500).json({ error: error }))
 })
+
+
+// Get all user
+exports.getAllUsers = ((request, response, next) => {
+    User.find()
+        .then((users) => response.status(200).json(users))
+        .catch(error => response.status(400).json({ error }))
+})
+
+// Delete an user
+exports.deleteUser = ((request, response, next) => {
+    User.deleteOne({ _id: request.params.id })
+        .then(() => response.status(200).json({ message: "User deleted" }))
+        .catch(error => response.status(400).json({ error }))
+})
