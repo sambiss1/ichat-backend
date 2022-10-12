@@ -16,6 +16,35 @@ exports.createMessage = async (request, response) => {
         recipients.messages.push(message);
         await recipients.save();
 
+
+        // const conversation = new Conversation {
+        //     {parti}
+        // }
+        const existConversation = await Conversation.findOne({ participants: { $all: participants } })
+        // const currentConversation = await Conversation.filter((discussion) => discussion._id === conversation._id)
+
+        console.log(currentConversation)
+
+        const participants = [];
+        participants.push(sender);
+        participants.push(recipients);
+
+
+        const newConversation = new Conversation(
+            {
+                participants: [...participants],
+                messages: message
+            }
+        )
+
+        await newConversation.save()
+            .then(() => {
+                response.status(201).json(
+                    { message: "Nouvelle conversation", conversation: newConversation }
+                )
+            })
+            .catch(error => response.status(400).json({ error: error }));
+
         await message.save()
             .then(() => {
                 response.status(201).json(
@@ -23,7 +52,9 @@ exports.createMessage = async (request, response) => {
                 )
             })
             .catch(error => response.status(400).json({ error: error }));
-        
+
+
+
     }
     catch (err) {
         response.status(400).json({ success: false, message: err.message })

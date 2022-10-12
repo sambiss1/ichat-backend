@@ -34,7 +34,7 @@ exports.createConversation = async (request, response) => {
 
 exports.getAllConversation = (request, response) => {
     Conversations.find()
-        .populate({ path: "participants", model: User })
+        .populate({ path: "participants", select: "firstName lastName userName email", model: User })
         .populate({ path: "messages", model: Message })
         .then((conversations) => response.status(200).json({ conversations }))
         .catch(error => response.status(400).json({ error }))
