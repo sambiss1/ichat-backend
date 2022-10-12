@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const userRouter = require("./routes/user");
-const messageRouter = require("./routes/messages")
-
+const messageRouter = require("./routes/messages");
+const conversationsRouter = require("./routes/conversations")
 const app = express();
 app.use(express.json())
 
@@ -25,6 +25,7 @@ mongoose.connect(`mongodb://${process.env.NODE_APP_DB_USER}:${process.env.NODE_A
 
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
+app.use("/api/conversations", conversationsRouter);
 
 // App final response
 app.use((request, response, next) => {

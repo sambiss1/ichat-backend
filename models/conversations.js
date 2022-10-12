@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose.Schema
 
-const conversationSchema = Schema({
+const conversationSchema = mongoose.Schema({
     participants:
-    {
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    }
+        [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }]
     ,
-    messages: {
-        type: Schema.Types.ObjectId,
+    messages: [{
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Message"
-    }
+    }]
 })
 
 module.exports = mongoose.model("Conversation", conversationSchema);

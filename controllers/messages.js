@@ -1,6 +1,6 @@
 const Message = require("../models/messages");
 const User = require("../models/user");
-
+const Conversation = require("../models/conversations");
 
 exports.createMessage = async (request, response) => {
     try {
@@ -23,6 +23,7 @@ exports.createMessage = async (request, response) => {
                 )
             })
             .catch(error => response.status(400).json({ error: error }));
+        
     }
     catch (err) {
         response.status(400).json({ success: false, message: err.message })
