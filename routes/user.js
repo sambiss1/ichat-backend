@@ -13,5 +13,7 @@ router.get("/", userController.getAllUsers);
 // Delete user 
 router.delete("/:id", userController.deleteUser);
 
+router.get("/:id", userController.getAUser);
+
 
 module.exports = router;

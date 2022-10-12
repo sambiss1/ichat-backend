@@ -34,3 +34,14 @@ exports.deleteUser = ((request, response, next) => {
         .then(() => response.status(200).json({ message: "User deleted" }))
         .catch(error => response.status(400).json({ error }))
 })
+
+
+// Get an user
+exports.getAUser = (request, response) => {
+    User
+        .findOne({ _id: request.params.id })
+        .populate("messages") // key to populate
+        .then(user => {
+            response.json(user);
+        });
+}
