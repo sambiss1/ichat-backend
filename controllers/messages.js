@@ -7,39 +7,36 @@ exports.createMessage = async (request, response) => {
         const message = new Message({
             ...request.body
         });
-        await message.save();
 
-        const sender = await User.findById({ _id: message.sender })
-        // sender.messages.push(message);
-        sender.messages(...message);
+        const sender = await User.findById({ _id: message.sender._id }).populate("messages")
+        sender.messages.push(message);
         await sender.save();
 
-        const recipients = await User.findById({ _id: message.recipients }).populate("message")
-        // recipients.message.push(message);
-        recipients.messages[{ ...message }];
+        const recipients = await User.findById({ _id: message.recipients }).populate("messages")
+        recipients.messages.push(message);
         await recipients.save();
 
-        response.status(201).json({ message: "Nouveau messsae", messageContent: message })
+        await message.save()
+            .then(() => {
+                response.status(201).json(
+                    { message: "Nouveau messsae", messageContent: message }
+                )
+            })
+            .catch(error => response.status(400).json({ error: error }));
     }
     catch (err) {
         response.status(400).json({ success: false, message: err.message })
     }
 
-    // message.save()
-    //     .then(() => response.status(201).json(
-    //         { message: "Nouveau messsae", messageContent: message }
-    //     ))
-    //     .catch(error => response.status(400).json({ error }));
 }
 
 exports.getParticipants = (request, response, next) => {
 
 }
-exports.getAllMessages = async (request, response, next) => {
+exports.getAllMessages = (request, response, next) => {
     Message.find()
-        .populate({
-            path: "User"
-        })
+        .populate("sender", "firstName lastName userName email")
+        .populate("recipients", "firstName lastName userName email")
         .then((messages) => {
 
             response.status(201).json(
@@ -55,9 +52,7 @@ exports.getAllMessages = async (request, response, next) => {
 }
 
 exports.getOneMessage = (request, response) => {
-    Message.findOne({ _id: request.params.id }, {
-        password: 0
-    })
+    Message.findOne({ _id: request.params.id })
         .populate("sender", "firstName lastName userName email")
         .populate("recipients", "firstName lastName userName email")
         .then((message) => response.status(200).json({ message }))
