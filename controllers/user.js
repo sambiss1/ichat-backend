@@ -24,9 +24,9 @@ exports.createUser = ((request, response, next) => {
 })
 
 //Sign in
-exports.login = async (request, response) => {
+exports.login = (request, response) => {
     console.log("Logged In");
-    await User.findOne({ userName: req.body.username }, (err, user) => {
+    User.findOne({ userName: req.body.username }, (err, user) => {
         if (err) {
             console.log("Error Happened In auth /token Route");
         } else {
@@ -40,13 +40,13 @@ exports.login = async (request, response) => {
             });
         }
 
-        bcrypt.compare(request.body.password, user.password)
-            .then(valid => {
-                if (!valid) {
-                    return response.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
-                }
-                return
-            })
+        // bcrypt.compare(request.body.password, user.password)
+        //     .then(valid => {
+        //         if (!valid) {
+        //             return response.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
+        //         }
+        //         return
+        //     })
     });
 };
 

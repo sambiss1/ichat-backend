@@ -1,6 +1,6 @@
 module.exports = {
-    jwtSecret: `${process.env.NODE_APP_JWT_SECRET}`,
+    jwtSecret: "s0m3$3Cret$h0lyC0d3&$",
     jwtSession: {
-        session: true
+        session: false
     }
 };
