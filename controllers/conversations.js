@@ -39,3 +39,15 @@ exports.getAllConversation = (request, response) => {
         .then((conversations) => response.status(200).json({ conversations }))
         .catch(error => response.status(400).json({ error }))
 }
+
+// Delete all conversation
+exports.deleteAllConversations = async (request, response) => {
+    try {
+        await Conversations.deleteMany()
+            .then(() => response.status(200).json({ message: "All conversations deleted" }))
+            .catch(error => response.status(400).json({ error}))
+    }
+    catch (error) {
+        response.status(400).json({ error })
+    }
+}

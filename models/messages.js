@@ -18,6 +18,6 @@ const messageSchema = mongoose.Schema({
     messageImage: { type: String, required: false },
     dateSent: { type: String, required: false },
     dateReceived: { type: String, required: false }
-})
+},{ timestamps: true })
 
 module.exports = mongoose.model("Message", messageSchema);

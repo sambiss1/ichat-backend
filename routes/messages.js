@@ -16,5 +16,6 @@ router.get("/", messagesController.getAllMessages);
 // Get a message
 router.get("/:id", messagesController.getOneMessage);
 
+router.delete("/", messagesController.deleteAllMessage);
 
 module.exports = router;

@@ -46,3 +46,14 @@ exports.getAUser = (request, response) => {
             response.json(user);
         });
 }
+
+// Delete all user 
+exports.deleteAllUsers = async (request, response) => {
+    try {
+        await User.deleteMany()
+            .then(() => response.status(200).json({ message: "All users account deleted" }))
+    }
+    catch (error) {
+        response.status(400).json({ error: error })
+    }
+}       
