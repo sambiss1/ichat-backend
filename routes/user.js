@@ -2,14 +2,12 @@ const express = require("express");
 
 const router = express.Router();
 const userController = require("../controllers/user")
-const passport = require("passport")
+
 
 
 // Sign up user
 router.post("/signup", userController.createUser);
 
-// Sign in or login 
-router.post("/login", passport.authenticate("local"), userController.login)
 
 // Get user
 router.get("/", userController.getAllUsers);

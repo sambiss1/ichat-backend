@@ -1,7 +1,5 @@
 const User = require("../models/user")
 const bcrypt = require("bcrypt");
-const config = require("../config");
-const jwt = require("jwt-simple")
 
 
 // Create an user 
@@ -24,31 +22,31 @@ exports.createUser = ((request, response, next) => {
 })
 
 //Sign in
-exports.login = (request, response) => {
-    console.log("Logged In");
-    User.findOne({ userName: req.body.username }, (err, user) => {
-        if (err) {
-            console.log("Error Happened In auth /token Route");
-        } else {
-            var payload = {
-                id: user.id,
-                expire: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
-            };
-            var token = jwt.encode(payload, config.jwtSecret);
-            res.json({
-                token: token,
-            });
-        }
+// exports.login = (request, response) => {
+//     console.log("Logged In");
+//     User.findOne({ userName: req.body.username }, (err, user) => {
+//         if (err) {
+//             console.log("Error Happened In auth /token Route");
+//         } else {
+//             var payload = {
+//                 id: user.id,
+//                 expire: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
+//             };
+//             var token = jwt.encode(payload, config.jwtSecret);
+//             res.json({
+//                 token: token,
+//             });
+//         }
 
-        // bcrypt.compare(request.body.password, user.password)
-        //     .then(valid => {
-        //         if (!valid) {
-        //             return response.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
-        //         }
-        //         return
-        //     })
-    });
-};
+//         // bcrypt.compare(request.body.password, user.password)
+//         //     .then(valid => {
+//         //         if (!valid) {
+//         //             return response.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
+//         //         }
+//         //         return
+//         //     })
+//     });
+// };
 
 
 // Get all user
@@ -80,7 +78,7 @@ exports.getAUser = (request, response) => {
 // Delete all user 
 exports.deleteAllUsers = async (request, response) => {
     try {
-        await User.deleteMany()
+        await User.remove()
             .then(() => response.status(200).json({ message: "All users account deleted" }))
     }
     catch (error) {
