@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
+const passportLocalMongoose = require("passport-local-mongoose");
 
 const userSchema = mongoose.Schema({
     firstName: { type: String, required: false },
@@ -18,5 +19,6 @@ const userSchema = mongoose.Schema({
 }, { timestamps: true })
 
 userSchema.plugin(uniqueValidator);
+userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User", userSchema);

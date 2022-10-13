@@ -1,8 +1,11 @@
 const User = require("../models/user")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const config = require("../config");
+const jwt = require("jwt-simple")
 
 
 // Create an user 
+// Register
 exports.createUser = ((request, response, next) => {
     bcrypt.hash(request.body.password, 10)
         .then(hash => {
@@ -19,6 +22,33 @@ exports.createUser = ((request, response, next) => {
         })
         .catch(error => response.status(500).json({ error: error }))
 })
+
+//Sign in
+exports.login = async (request, response) => {
+    console.log("Logged In");
+    await User.findOne({ userName: req.body.username }, (err, user) => {
+        if (err) {
+            console.log("Error Happened In auth /token Route");
+        } else {
+            var payload = {
+                id: user.id,
+                expire: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
+            };
+            var token = jwt.encode(payload, config.jwtSecret);
+            res.json({
+                token: token,
+            });
+        }
+
+        bcrypt.compare(request.body.password, user.password)
+            .then(valid => {
+                if (!valid) {
+                    return response.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
+                }
+                return
+            })
+    });
+};
 
 
 // Get all user
