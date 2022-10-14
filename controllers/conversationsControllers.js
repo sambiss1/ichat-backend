@@ -5,15 +5,9 @@ const User = require("../models/userModel");
 exports.createConversation = async (request, response) => {
     try {
         const newConversation = new Conversations({
-            ...request.body
+            participants: [request.body.userA, request.body.userB]
         });
 
-        // const message = await Message.findById({ _id: message._id })
-        // await message.save();
-
-        // const participants = await User.findById({ _id: participants._id })
-
-        // await participants.save();
 
         await newConversation.save()
             .then(() => {
@@ -32,11 +26,17 @@ exports.createConversation = async (request, response) => {
 
 exports.getAllConversation = (request, response) => {
     Conversations.find()
-        .populate({ path: "participants", select: "firstName lastName userName email", model: User })
-        .populate({ path: "messages", model: Message })
+        .populate({ path: "participants", select: "firstName lastName userName email" })
+        .populate({ path: "messages" })
         .then((conversations) => response.status(200).json({ conversations }))
         .catch(error => response.status(400).json({ error }))
 }
+
+// exports.getOneConversation = (request, response) => {
+//     Conversations.findOne({ $or: [{ sender: userA, receiver: userB }, { sender: userB, receiver: userA }] })
+//         .populate({ path: "participants", select: "firstName lastName userName email" })
+
+// }
 
 // Delete all conversation
 exports.deleteAllConversations = async (request, response) => {

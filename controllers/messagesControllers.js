@@ -7,38 +7,21 @@ exports.createMessage = async (request, response) => {
         const message = new Message({
             ...request.body
         });
+     
+        const conversationId = await Conversation.findById({ _id: request.body.conversationId })
 
-        const sender = await User.findById({ _id: message.sender._id }).populate("messages")
-        sender.messages.push(message);
-        await sender.save();
-
-        const recipients = await User.findById({ _id: message.recipients }).populate("messages")
-        recipients.messages.push(message);
-        await recipients.save();
-
-        const participants = [];
-        participants.push(sender);
-        participants.push(recipients);
-
-        const existConversation = await Conversation.findOne({ participants: { $all: participants } })
-
-        if (!existConversation) {
-            const newConversation = await Conversation.create(
-                {
-                    participants: [...participants],
-                    messages: message
-                }
-            )
-            return newConversation
+        if (conversationId === null) {
+            return response.send("Conversation doesn't exists ")
         }
-
-        await message.save()
-            .then(() => {
-                response.status(201).json(
-                    { message: "Nouveau messsae", messageContent: message }
-                )
-            })
+        await message.save();
+        Conversation.findByIdAndUpdate({ _id: request.body.conversationId }, {
+            $push: { messages: message }
+        }).then(() => response.status(200).json({
+            response: "Nouveu message ajouté dans la conversation"
+        }))
             .catch(error => response.status(400).json({ error: error }));
+
+
     }
     catch (err) {
         response.status(400).json({ success: false, message: err.message })
@@ -51,7 +34,7 @@ exports.getParticipants = (request, response, next) => {
 exports.getAllMessages = (request, response, next) => {
     Message.find()
         .populate("sender", "firstName lastName userName email")
-        .populate("recipients", "firstName lastName userName email")
+        // .populate("recipients", "firstName lastName userName email")
         .then((messages) => {
 
             response.status(201).json(
