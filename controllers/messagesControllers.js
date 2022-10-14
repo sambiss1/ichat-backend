@@ -59,11 +59,9 @@ exports.getAllMessages = (request, response, next) => {
                     messgae: messages
                 }
 
-
             )
         })
         .catch(error => response.status(400).json({ error }));
-
 }
 
 exports.getOneMessage = (request, response) => {

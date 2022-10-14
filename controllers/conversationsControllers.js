@@ -3,19 +3,17 @@ const Message = require("../models/messagesModel");
 const User = require("../models/userModel");
 
 exports.createConversation = async (request, response) => {
-    Conversations
     try {
         const newConversation = new Conversations({
             ...request.body
         });
 
-        const message = await Message.findById({ _id: message._id })
-        // sender.messages.push(message);
-        await message.save();
+        // const message = await Message.findById({ _id: message._id })
+        // await message.save();
 
-        const participants = await User.findById({ _id: participants._id })
-        // recipients.messages.push(message);
-        await participants.save();
+        // const participants = await User.findById({ _id: participants._id })
+
+        // await participants.save();
 
         await newConversation.save()
             .then(() => {
