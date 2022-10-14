@@ -1,6 +1,6 @@
-const Conversations = require("../models/conversations");
-const Message = require("../models/messages");
-const User = require("../models/user");
+const Conversations = require("../models/conversationsModel");
+const Message = require("../models/messagesModel");
+const User = require("../models/userModel");
 
 exports.createConversation = async (request, response) => {
     Conversations
@@ -45,7 +45,7 @@ exports.deleteAllConversations = async (request, response) => {
     try {
         await Conversations.deleteMany()
             .then(() => response.status(200).json({ message: "All conversations deleted" }))
-            .catch(error => response.status(400).json({ error}))
+            .catch(error => response.status(400).json({ error }))
     }
     catch (error) {
         response.status(400).json({ error })

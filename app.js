@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const userRouter = require("./routes/user");
-const messageRouter = require("./routes/messages");
-const conversationsRouter = require("./routes/conversations");
+const userRouter = require("./routes/userRoutes");
+const messageRouter = require("./routes/messagesRoutes");
+const conversationsRouter = require("./routes/conversationsRoutes");
 
 const app = express();
 app.use(express.json())
