@@ -7,7 +7,7 @@ exports.createMessage = async (request, response) => {
         const message = new Message({
             ...request.body
         });
-     
+
         const conversationId = await Conversation.findById({ _id: request.body.conversationId })
 
         if (conversationId === null) {
@@ -28,13 +28,9 @@ exports.createMessage = async (request, response) => {
     }
 }
 
-exports.getParticipants = (request, response, next) => {
-
-}
 exports.getAllMessages = (request, response, next) => {
     Message.find()
         .populate("sender", "firstName lastName userName email")
-        // .populate("recipients", "firstName lastName userName email")
         .then((messages) => {
 
             response.status(201).json(

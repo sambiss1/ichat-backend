@@ -10,12 +10,6 @@ const userSchema = mongoose.Schema({
     password: { type: String, required: true },
     userStatus: { type: Boolean, required: false },
     image: { type: String, required: false },
-    messages: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Message"
-        }
-    ]
 }, { timestamps: true })
 
 userSchema.plugin(uniqueValidator);

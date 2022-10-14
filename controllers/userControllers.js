@@ -52,7 +52,6 @@ exports.createUser = ((request, response, next) => {
 // Get all user
 exports.getAllUsers = ((request, response, next) => {
     User.find()
-        .populate("messages") // key to populate
         .then((users) => response.status(200).json(users))
         .catch(error => response.status(400).json({ error }))
 })
