@@ -1,4 +1,5 @@
 const express = require("express");
+const passport = require("passport");
 
 const router = express.Router();
 const userController = require("../controllers/userControllers")
@@ -7,6 +8,9 @@ const userController = require("../controllers/userControllers")
 
 // Sign up user
 router.post("/signup", userController.createUser);
+
+// Sign in (login)
+router.post("/login", passport.authenticate("local"), userController.login)
 
 
 // Get user

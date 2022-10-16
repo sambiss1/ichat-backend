@@ -1,5 +1,9 @@
 const User = require("../models/userModel")
 const bcrypt = require("bcrypt");
+const jwt = require("jwt-simple");
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const JwtStrategy = require('passport-jwt').Strategy
+
 
 
 // Create an user 
@@ -22,32 +26,67 @@ exports.createUser = ((request, response, next) => {
 })
 
 //Sign in
-// exports.login = (request, response) => {
-//     console.log("Logged In");
-//     User.findOne({ userName: req.body.username }, (err, user) => {
-//         if (err) {
-//             console.log("Error Happened In auth /token Route");
-//         } else {
-//             var payload = {
-//                 id: user.id,
-//                 expire: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
-//             };
-//             var token = jwt.encode(payload, config.jwtSecret);
-//             res.json({
-//                 token: token,
-//             });
-//         }
+// exports.logIn = (req, res) => {
+//     User.findOne({ username: req.body.username })
+//         .then(user => {
+//             if (user === null) {
+//                 res.status(401).json({
+//                     success: false,
+//                     message: 'User not found',
+//                 })
+//             }
+//             else {
+//                 bcrypt.compare(req.body.password, user.password)
+//                     .then(valid => {
+//                         if (!valid) {
+//                             return res.status(401).json({
+//                                 success: false,
+//                                 message: 'incorrect password',
+//                             })
+//                         }
+//                         //correct password
+//                         const payload = {
+//                             username: user.userName,
+//                             id: user._id,
+//                         }
+//                         require('dotenv').config()
+//                         const token = jwt.sign(payload, process.env.NODE_APP_JWT_SECRET, { expiresIn: '1d' })
+//                         return res.status(200).json({
+//                             payload: payload,
+//                             success: true,
+//                             message: "logged in successfully",
+//                             token: "Bearer " + token
+//                         })
 
-//         // bcrypt.compare(request.body.password, user.password)
-//         //     .then(valid => {
-//         //         if (!valid) {
-//         //             return response.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
-//         //         }
-//         //         return
-//         //     })
-//     });
-// };
+//                     })
+//                     .catch(err => res.status(500).json({ message: err }))
+//             }
+//         })
+//         .catch(err => res.status(500).json({ message: err }))
+// }
 
+
+const opts = {}
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+
+exports.login = function (request, response) {
+    console.log("Logged In");
+    User.findOne({ userName: request.body.username }, (error, user) => {
+        if (error) {
+            console.log("Error Happened In auth /token Route");
+            response.status(401).json({ error })
+        } else {
+            var payload = {
+                id: user._id,
+                expire: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
+            };
+            var token = jwt.encode(payload, config.jwtSecret);
+            response.json({
+                token: token,
+            });
+        }
+    });
+};
 
 // Get all user
 exports.getAllUsers = ((request, response, next) => {

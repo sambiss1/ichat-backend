@@ -3,6 +3,12 @@ const mongoose = require("mongoose");
 const userRouter = require("./routes/userRoutes");
 const messageRouter = require("./routes/messagesRoutes");
 const conversationsRouter = require("./routes/conversationsRoutes");
+const auth = require('./middleware/auth.js')();
+const passport = require("passport");
+
+const localStrategy = require("passport-local");
+const User = require("./models/userModel")
+
 
 const app = express();
 app.use(express.json())
@@ -22,10 +28,25 @@ mongoose.connect(`mongodb://${process.env.NODE_APP_DB_USER}:${process.env.NODE_A
 }).then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+app.use(require("express-session")({
+    secret: "s0m3$3Cret$h0lyC0d3&$",
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(auth.initialize());
+// Passport Config
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/conversations", conversationsRouter);
+
 
 // App final response
 app.use((request, response, next) => {
