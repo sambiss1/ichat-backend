@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
 }, { timestamps: true }) 
 
 userSchema.plugin(uniqueValidator);
-userSchema.plugin(passportLocalMongoose);
+// userSchema.plugin(passportLocalMongoose);
 
 
 module.exports = mongoose.model("User", userSchema);

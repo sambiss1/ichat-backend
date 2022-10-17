@@ -1,5 +1,6 @@
 const express = require("express");
-const passport = require("passport");
+// const passport = require("passport");
+const passport = require("../middleware/protectedAuth")
 
 const router = express.Router();
 const userController = require("../controllers/userControllers")
@@ -10,7 +11,7 @@ const userController = require("../controllers/userControllers")
 router.post("/signup", userController.createUser);
 
 // Sign in (login)
-router.post("/login", passport.authenticate("local"), userController.login)
+router.post("/login", userController.login)
 
 
 // Get user
