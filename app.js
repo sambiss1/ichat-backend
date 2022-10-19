@@ -5,12 +5,13 @@ const messageRouter = require("./routes/messagesRoutes");
 const conversationsRouter = require("./routes/conversationsRoutes");
 const auth = require('./middleware/auth.js')();
 const passport = require("passport");
+const cors = require("cors");
 
 const localStrategy = require("passport-local");
 const User = require("./models/userModel")
 
-
 const app = express();
+app.use(cors())
 app.use(express.json())
 
 
@@ -34,9 +35,12 @@ app.use(require("express-session")({
     saveUninitialized: false
 }));
 
+app.use(passport.initialize());
+const restrictor = passport.authenticate('jwt', { session: false })
+
 // app.use(auth.initialize());
 // // Passport Config
-// app.use(passport.initialize());
+
 // app.use(passport.session());
 // passport.use(new localStrategy(User.authenticate()));
 // passport.serializeUser(User.serializeUser());
@@ -44,13 +48,13 @@ app.use(require("express-session")({
 
 
 app.use("/api/user", userRouter);
-app.use("/api/message", messageRouter);
-app.use("/api/conversations", conversationsRouter);
+app.use("/api/message", restrictor, messageRouter);
+app.use("/api/conversations", restrictor, conversationsRouter);
 
 
-// App final response
+// App final response 
 app.use((request, response, next) => {
     console.log('Réponse envoyée avec succès !');
 });
 
-module.exports = app;
+module.exports = app; 

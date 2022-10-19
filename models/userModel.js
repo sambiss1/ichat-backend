@@ -10,8 +10,8 @@ const userSchema = mongoose.Schema({
     password: { type: String, required: true },
     userStatus: { type: Boolean, required: false },
     image: { type: String, required: false },
-}, { timestamps: true }) 
-
+}, { timestamps: true })   
+  
 userSchema.plugin(uniqueValidator);
 // userSchema.plugin(passportLocalMongoose);
 

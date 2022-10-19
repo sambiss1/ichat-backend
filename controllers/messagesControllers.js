@@ -35,7 +35,7 @@ exports.getAllMessages = (request, response, next) => {
 
             response.status(201).json(
                 {
-                    messgae: messages
+                    message: messages
                 }
 
             )

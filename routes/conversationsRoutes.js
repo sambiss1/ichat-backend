@@ -8,6 +8,7 @@ router.get("/", conversationController.getAllConversation);
 
 router.post("/new", conversationController.createConversation);
 
+router.get("/:id", conversationController.getOneConversation);
 
 router.delete("/", conversationController.deleteAllConversations);
 

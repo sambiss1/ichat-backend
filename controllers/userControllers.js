@@ -24,8 +24,8 @@ exports.createUser = ((request, response, next) => {
                 .catch(error => response.status(400).json({ error: error }));
         })
         .catch(error => response.status(500).json({ error: error }))
-})
-
+}) 
+   
 //Sign in
 exports.login = (request, response) => {
     User.findOne({ userName: request.body.username })
@@ -34,7 +34,7 @@ exports.login = (request, response) => {
                 response.status(401).json({
                     success: false,
                     message: 'User not found',
-                })
+                }) 
             }
             else {
 
@@ -51,9 +51,10 @@ exports.login = (request, response) => {
                         if (!valid) {
                             return response.status(401).json({
                                 success: false,
-                                message: 'incorrect password',
+                                message: 'incorrect username or password',
                             })
                         } else {
+
                             return response.status(200).json({
                                 payload: payload,
                                 success: true,
@@ -90,7 +91,7 @@ exports.deleteUser = ((request, response, next) => {
 exports.getAUser = (request, response) => {
     User
         .findOne({ _id: request.params.id })
-        .populate("messages") // key to populate
+        // .populate("messages") // key to populate
         .then(user => {
             response.json(user);
         });
