@@ -7,11 +7,17 @@ const messagesController = require("./messagesControllers");
 
 exports.createConversation = async (request, response) => {
     try {
-        let members = [request.body.userA, request.body.userB]
-        let existConversation = Conversations.find({ participants: members })
-        
+        // let members = { $or: [{ userA: request.body.userA, userB: request.body.userB }, { userB: request.body.userB, userA: request.body.userA }] }
+
+        let members = { userA: request.body.userA, userB: request.body.userB }
+        let existConversation = await Conversations.find({ participants: members })
+        // let existConversation = await Conversations.find({ $or: [{ userA: request.body.userA, userB: request.body.userB }, { userB: request.body.userB, userA: request.body.userA }] })
+        // let existConversation = await Conversations.find({ $or: [{ userA: request.body.userA, userB: request.body.userB }, { userB: request.body.userB, userA: request.body.userA }] })
+
         if (existConversation !== null) {
-            return existConversation
+            console.log(existConversation)
+            return response.send({ message: "Conversation exists ", conversation: existConversation })
+            // return existConversation
         }
         const newConversation = new Conversations({
             participants: [request.body.userA, request.body.userB]
@@ -29,7 +35,7 @@ exports.createConversation = async (request, response) => {
     }
 
 }
- 
+
 
 exports.getAllConversation = (request, response) => {
     Conversations.find()
@@ -44,7 +50,7 @@ exports.getOneConversation = async (request, response) => {
     const getMessageConversation = await Conversations.findOne({ _id: request.params.id }).populate({ path: "messages" })
     if (getMessageConversation === "undefined") return response.status(404).json({ error: error })
 
-    await Conversations.findOne({ _id: request.params.id }) 
+    await Conversations.findOne({ _id: request.params.id })
         .populate({ path: "messages" })
         .then((conversation) =>
             response.status(200).json(conversation))
@@ -56,6 +62,17 @@ exports.deleteAllConversations = async (request, response) => {
     try {
         await Conversations.deleteMany()
             .then(() => response.status(200).json({ message: "All conversations deleted" }))
+            .catch(error => response.status(400).json({ error }))
+    }
+    catch (error) {
+        response.status(400).json({ error })
+    }
+}
+
+exports.deleteOneConversation = async (request, response) => {
+    try {
+        await Conversations.findOneAndDelete({ _id: request.params.id })
+            .then(() => response.status(200).json({ message: "A conversation deleted" }))
             .catch(error => response.status(400).json({ error }))
     }
     catch (error) {

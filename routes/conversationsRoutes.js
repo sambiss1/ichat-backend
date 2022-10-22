@@ -12,5 +12,7 @@ router.get("/:id", conversationController.getOneConversation);
 
 router.delete("/", conversationController.deleteAllConversations);
 
+router.delete("/:id", conversationController.deleteOneConversation);
+
 
 module.exports = router;
