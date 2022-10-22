@@ -3,12 +3,13 @@ const mongoose = require("mongoose");
 const userRouter = require("./routes/userRoutes");
 const messageRouter = require("./routes/messagesRoutes");
 const conversationsRouter = require("./routes/conversationsRoutes");
+
 const auth = require('./middleware/auth.js')();
 const passport = require("passport");
 const cors = require("cors");
 
 const localStrategy = require("passport-local");
-const User = require("./models/userModel")
+const User = require("./models/userModel");
 
 const app = express();
 app.use(cors())
@@ -38,18 +39,14 @@ app.use(require("express-session")({
 app.use(passport.initialize());
 const restrictor = passport.authenticate('jwt', { session: false })
 
-// app.use(auth.initialize());
-// // Passport Config
-
-// app.use(passport.session());
-// passport.use(new localStrategy(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
 
 
 app.use("/api/user", userRouter);
 app.use("/api/message", restrictor, messageRouter);
 app.use("/api/conversations", restrictor, conversationsRouter);
+
+
+
 
 
 // App final response 

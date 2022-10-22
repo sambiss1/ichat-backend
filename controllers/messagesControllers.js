@@ -16,8 +16,9 @@ exports.createMessage = async (request, response) => {
         await message.save();
         Conversation.findByIdAndUpdate({ _id: request.body.conversationId }, {
             $push: { messages: message }
-        }).then(() => response.status(200).json({
-            response: "Nouveu message ajouté dans la conversation"
+        }).then((messages) => response.status(200).json({
+            response: "Nouveu message ajouté dans la conversation",
+            newMessage: messages
         }))
             .catch(error => response.status(400).json({ error: error }));
 

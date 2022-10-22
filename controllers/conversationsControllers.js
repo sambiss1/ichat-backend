@@ -7,6 +7,12 @@ const messagesController = require("./messagesControllers");
 
 exports.createConversation = async (request, response) => {
     try {
+        let members = [request.body.userA, request.body.userB]
+        let existConversation = Conversations.find({ participants: members })
+        
+        if (existConversation !== null) {
+            return existConversation
+        }
         const newConversation = new Conversations({
             participants: [request.body.userA, request.body.userB]
         });
