@@ -66,6 +66,11 @@ io.on('connection', (socket) => {
     //     io.emit('chat message', msg);
     // });
 
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`
+       
+    );
+    });
     socket.on("login", ({ username }) => {
         console.log(`${username} is connected`)
 
