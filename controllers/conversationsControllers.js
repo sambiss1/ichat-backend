@@ -6,16 +6,27 @@ const messagesController = require("./messagesControllers");
 
 
 exports.createConversation = async (request, response) => {
-    try {
-        let {members}  = request.body
-        let existConversation = await Conversations.findOne({ participants:  {$all: [...members] } })
+    try {  
+
+        const connectedUserId = request.body.userA;
+        const otherUserId = request.body.userB; 
+        let existConversation = await Conversations.findOne({ $or: [
+                    { 
+                        from:  connectedUserId, 
+                        to: otherUserId
+            },
+            { 
+                    from:  otherUserId,
+                    to: connectedUserId   
+            }  
+          ]   })
 
         if (existConversation !== null) {
             return response.send({ message: "Conversation exists ", conversation: existConversation })
         }
-        
-        const newConversation = new Conversations({
-            participants: [...members] 
+         
+        const newConversation = new Conversations({ 
+            from: request.body.userA, to: request.body.userB              
         }); 
         await newConversation.save()
             .then(() => {
@@ -33,11 +44,31 @@ exports.createConversation = async (request, response) => {
 
 
 exports.getAllConversation = (request, response) => {
-    Conversations.find()
-        .populate({ path: "participants", select: "firstName lastName userName email" })
+  
+
+    const connectedUserId = request.body.userA;
+    const otherUserId = request.body.userB; 
+
+    console.log(request.body)  
+    Conversations.find({ 
+            $or: [
+                    { 
+                        from:  connectedUserId, 
+                        to: otherUserId
+            },
+            { 
+                    from:  otherUserId,
+                    to: connectedUserId   
+            }  
+          ]  
+        
+    })
+        .populate({ path: "from", select: "firstName lastName userName email" })
+        .populate({ path: "to", select: "firstName lastName userName email" })
         .populate({ path: "messages" })
+    
         .then((conversations) => response.status(200).json({ conversations }))
-        .catch(error => response.status(400).json({ error }))
+    .catch(error => response.status(400).json({ error }))
 }
 
 
