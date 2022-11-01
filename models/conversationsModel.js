@@ -2,16 +2,12 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose.Schema
 
 const conversationSchema = mongoose.Schema({
-    from: 
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
-    },
-    to: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
-    }
-    ,
+    participants:[ {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+        
+    }], 
+    
     messages: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message"
