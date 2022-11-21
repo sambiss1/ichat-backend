@@ -25,7 +25,7 @@ exports.createConversation = async (request, response) => {
                 response.status(201).json(
                     { message: "New conversation", Conversation: newConversation }
                 )
-            })
+            }) 
             .catch(error => response.status(400).json({ error: error }));
     }
     catch (err) {
@@ -49,15 +49,12 @@ exports.getAUserConversation = (request, response) => {
 }
 
 
-exports.getAllConversation = (request, response) => {
-    const connectedUserId = request.params.userA;
-    const otherUserId = request.params.userB; 
+exports.getConversationForTwoUsers = (request, response) => {
     
     Conversations.find({ 
         participants: {
             $all: [request.params.userA,request.params.userB ]
         }
-        
     })
         .populate({ path: "participants", select: "firstName lastName userName email" })
         .populate({ path: "messages" })
@@ -65,6 +62,19 @@ exports.getAllConversation = (request, response) => {
         .then((conversations) => response.status(200).json({ conversations }))
     .catch(error => response.status(400).json({ error }))
 }
+
+exports.getAllConversations = (request, response) => {
+    
+    
+    Conversations.find()
+        .populate({ path: "participants", select: "firstName lastName userName email" })
+        .populate({ path: "messages" })
+    
+        .then((conversations) => response.status(200).json({ conversations }))
+    .catch(error => response.status(400).json({ error }))
+}
+
+
 
 
 exports.getOneConversation = async (request, response) => {
