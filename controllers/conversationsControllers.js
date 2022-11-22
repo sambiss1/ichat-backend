@@ -23,7 +23,7 @@ exports.createConversation = async (request, response) => {
         await newConversation.save()
             .then(() => {
                 response.status(201).json(
-                    { message: "New conversation", Conversation: newConversation }
+                    { responseMessage: "New conversation created", conversation: newConversation }
                 )
             }) 
             .catch(error => response.status(400).json({ error: error }));

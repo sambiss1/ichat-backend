@@ -59,6 +59,11 @@ io.on("connection", (socket) => {
   });
   socket.on("login", ({ username }) => {
     console.log(`${username} is connected`);
+
+    socket.emit("online", (status) => {
+      status = true;
+      console.log(status);
+    });
   });
 
   socket.on("test-send", ({ message }) => {
@@ -83,12 +88,12 @@ io.on("connection", (socket) => {
             messageImage,
           }
         );
-        console.log({
-          conversationId,
-          sender,
-          messageText,
-          messageImage,
-        });
+        // console.log({
+        //   conversationId,
+        //   sender,
+        //   messageText,
+        //   messageImage,
+        // });
       }
     );
 
