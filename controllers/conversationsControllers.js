@@ -6,28 +6,26 @@ const messagesController = require("./messagesControllers");
 
 
 exports.createConversation = async (request, response) => {
-    try {
-        // let members = { $or: [{ userA: request.body.userA, userB: request.body.userB }, { userB: request.body.userB, userA: request.body.userA }] }
-
-        let members = { userA: request.body.userA, userB: request.body.userB }
-        let existConversation = await Conversations.find({ participants: members })
-        // let existConversation = await Conversations.find({ $or: [{ userA: request.body.userA, userB: request.body.userB }, { userB: request.body.userB, userA: request.body.userA }] })
-        // let existConversation = await Conversations.find({ $or: [{ userA: request.body.userA, userB: request.body.userB }, { userB: request.body.userB, userA: request.body.userA }] })
+    try {  
+        const connectedUserId = request.params.userA;
+        const otherUserId = request.params.userB; 
+        let existConversation = await Conversations.findOne({ participants: {
+            $all: [request.params.userA,request.params.userB ]
+        }  })
 
         if (existConversation !== null) {
-            console.log(existConversation)
             return response.send({ message: "Conversation exists ", conversation: existConversation })
-            // return existConversation
         }
-        const newConversation = new Conversations({
-            participants: [request.body.userA, request.body.userB]
-        });
+         
+        const newConversation = new Conversations({ 
+           participants: [request.params.userA,request.params.userB ]             
+        }); 
         await newConversation.save()
             .then(() => {
                 response.status(201).json(
-                    { message: "New conversation", Conversation: newConversation }
+                    { responseMessage: "New conversation created", conversation: newConversation }
                 )
-            })
+            }) 
             .catch(error => response.status(400).json({ error: error }));
     }
     catch (err) {
@@ -36,14 +34,47 @@ exports.createConversation = async (request, response) => {
 
 }
 
+exports.getAUserConversation = (request, response) => {
+ Conversations.find({ 
+        participants: {
+            $in: [request.params.active_user]
+        }
+        
+    })
+        .populate({ path: "participants", select: "firstName lastName userName email" })
+        .populate({ path: "messages" })
+    
+        .then((conversations) => response.status(200).json({ conversations }))
+    .catch(error => response.status(400).json({ error }))
+}
 
-exports.getAllConversation = (request, response) => {
+
+exports.getConversationForTwoUsers = (request, response) => {
+    
+    Conversations.find({ 
+        participants: {
+            $all: [request.params.userA,request.params.userB ]
+        }
+    })
+        .populate({ path: "participants", select: "firstName lastName userName email" })
+        .populate({ path: "messages" })
+    
+        .then((conversations) => response.status(200).json({ conversations }))
+    .catch(error => response.status(400).json({ error }))
+}
+
+exports.getAllConversations = (request, response) => {
+    
+    
     Conversations.find()
         .populate({ path: "participants", select: "firstName lastName userName email" })
         .populate({ path: "messages" })
+    
         .then((conversations) => response.status(200).json({ conversations }))
-        .catch(error => response.status(400).json({ error }))
+    .catch(error => response.status(400).json({ error }))
 }
+
+
 
 
 exports.getOneConversation = async (request, response) => {
