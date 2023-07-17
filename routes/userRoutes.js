@@ -8,7 +8,7 @@ const userController = require("../controllers/userControllers")
 
 
 // Sign up user
-router.post("/signup", userController.createUser);
+router.post("/signup", userController.createUser, userController.login);
 
 // Sign in (login)
 router.post("/login", userController.login)

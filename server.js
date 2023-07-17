@@ -57,8 +57,8 @@ io.on("connection", (socket) => {
   socket.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
   });
-  socket.on("login", ({ username }) => {
-    console.log(`${username} is connected`);
+  socket.on("login", ({ userName }) => {
+    console.log(`${userName} is connected`);
 
     socket.emit("online", (status) => {
       status = true;
